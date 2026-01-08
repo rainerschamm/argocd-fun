@@ -12,14 +12,14 @@ spec:
     value.converter.schema.registry.ssl.truststore.location: /mnt/kafka_basicauth/truststore.p12
     value.converter.schema.registry.ssl.truststore.password: 112233
     value.converter.basic.auth.credentials.source: USER_INFO
-    value.converter.schema.registry.basic.auth.user.info: lsdmesp-api:oYR3tYgsUAabgaA
+    value.converter.schema.registry.basic.auth.user.info: {{ .Values.schemaRegBasicAuth }}
     value.converter.compatibility: FORWARD
     value.converter: io.confluent.connect.avro.AvroConverter
     key.converter.schema.registry.url: https://lsdmesp-cp-schema-registry:8081
     key.converter.schema.registry.ssl.truststore.location: /mnt/kafka_basicauth/truststore.p12
     key.converter.schema.registry.ssl.truststore.password: 112233
     key.converter.basic.auth.credentials.source: USER_INFO
-    key.converter.schema.registry.basic.auth.user.info: lsdmesp-api:oYR3tYgsUAabgaA
+    key.converter.schema.registry.basic.auth.user.info: {{ .Values.schemaRegBasicAuth }}
     key.converter.compatibility: FORWARD
     key.converter: io.confluent.connect.avro.AvroConverter
     schema.registry.url: https://lsdmesp-cp-schema-registry:8081
