@@ -1,0 +1,52 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: iceberg-sink-connector
+  labels:
+    strimzi.io/cluster: lsdmesp
+spec:
+  class: org.apache.iceberg.connect.IcebergSinkConnector
+  tasksMax: 1
+  config:
+    value.converter.schema.registry.url: https://lsdmesp-cp-schema-registry:8081
+    value.converter.schema.registry.ssl.truststore.location: /mnt/kafka_basicauth/truststore.p12
+    value.converter.schema.registry.ssl.truststore.password: 112233
+    value.converter.basic.auth.credentials.source: USER_INFO
+    value.converter.schema.registry.basic.auth.user.info: lsdmesp-api:oYR3tYgsUAabgaA
+    value.converter.compatibility: FORWARD
+    value.converter: io.confluent.connect.avro.AvroConverter
+    key.converter.schema.registry.url: https://lsdmesp-cp-schema-registry:8081
+    key.converter.schema.registry.ssl.truststore.location: /mnt/kafka_basicauth/truststore.p12
+    key.converter.schema.registry.ssl.truststore.password: 112233
+    key.converter.basic.auth.credentials.source: USER_INFO
+    key.converter.schema.registry.basic.auth.user.info: lsdmesp-api:oYR3tYgsUAabgaA
+    key.converter.compatibility: FORWARD
+    key.converter: io.confluent.connect.avro.AvroConverter
+    schema.registry.url: https://lsdmesp-cp-schema-registry:8081
+    errors.log.enable: true
+    topics: postgres.bank.transactions,postgres.bank.accounts,postgres.bank.customers
+    iceberg.control.commit.interval-ms: 10000
+    iceberg.catalog.type: rest
+    iceberg.catalog.uri: http://nessie:19120/iceberg
+    iceberg.catalog.warehouse: warehouse
+    iceberg.catalog.client.region: eu-west-1
+    iceberg.catalog.io-impl: org.apache.iceberg.aws.s3.S3FileIO
+    iceberg.table.default_database.postgres_bank_transactions.route-regex: transactions
+    iceberg.table.default_database.postgres_bank_transactions.id-columns: transaction_id
+    iceberg.table.default_database.postgres_bank_accounts.route-regex: accounts
+    iceberg.table.default_database.postgres_bank_accounts.id-columns: account_id
+    iceberg.table.default_database.postgres_bank_customers.route-regex: customers
+    iceberg.table.default_database.postgres_bank_customers.id-columns: customer_id
+    iceberg.tables: default_database.postgres_bank_transactions,default_database.postgres_bank_accounts,default_database.postgres_bank_customers
+    iceberg.tables.route-field: __table
+    iceberg.tables.cdc-field: __op
+    iceberg.tables.upsert-mode-enabled: true
+    iceberg.tables.auto-create-enabled: true
+    iceberg.tables.evolve-schema-enabled: true
+    iceberg.tables.dynamic-enabled: false
+    iceberg.tables.auto-create-props.write.delete.mode: merge-on-read
+    iceberg.tables.auto-create-props.write.merge.mode: merge-on-read
+    iceberg.tables.auto-create-props.write.update.mode: merge-on-read
+    transforms: mapcdcop
+    transforms.mapcdcop.type: io.lsdopen.kafka.connect.smt.MapCDCOp$Value
+    transforms.mapcdcop.opcode.field.name: __op
