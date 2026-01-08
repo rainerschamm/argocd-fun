@@ -1,1 +1,1 @@
-schemaRegBasicAuth: <path:kvv2/data/dev/schemaRegBasicAuth#creds>
+schemaRegBasicAuth: "${secrets:lsdmesp/schemaregistry-login:creds}"
